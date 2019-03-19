@@ -58,18 +58,14 @@ function movePoint(e) {
   let listOfpoints = e.target.closest('.list-points-routes');
   let coordsOfPoint = getCoords(point);
   let coordsOfList = getCoords(listOfpoints);
-  // let shiftX = e.pageX - coordsOfPoint.left;
   let shiftY = e.pageY - coordsOfPoint.top;
 
   point.style.position = 'absolute';
   point.style.borderColor = 'rgb(0, 0, 0)';
-  // point.style.cursor = 'grabbing';
   
   let ghostPoint = document.createElement('li');
   ghostPoint.classList.add('ghostPoint');
   listOfpoints.insertBefore(ghostPoint, point.nextElementSibling);
-  // point.style.zIndex = 1000; // над другими элементами
-  // document.body.appendChild(point);
   moveAt(e);
   
   document.onmousemove = function(e) {
@@ -77,7 +73,6 @@ function movePoint(e) {
   };
   
   document.onmouseup = function(e) {
-    // console.log(e)
     document.onmousemove = null;
     
     point.style.cssText = '';
@@ -89,13 +84,8 @@ function movePoint(e) {
   };
   
   function moveAt(e) {
-    // const left = e.pageX - shiftX;
-    // const right = e.pageX + coordsOfPoint.right;
     const top = e.pageY - shiftY;
-    
-    // if (left > coordsOfList.left && right < coordsOfList.right) {
-    //   point.style.left = left + 'px';
-    // };
+
     if (top > coordsOfList.top - 10 && top < coordsOfList.bottom - 5) {
       point.style.top = top + 'px';
     };
@@ -108,12 +98,8 @@ function movePoint(e) {
     listOfpoints.insertBefore(point, elem);
   }
 }
-
-// point.ondragstart = function() {
-  //   return false;
-  // };
   
-  function getCoords(elem) {   // кроме IE8-
+function getCoords(elem) {
   let box = elem.getBoundingClientRect();
   return {
     top: box.top + pageYOffset,
