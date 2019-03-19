@@ -1,0 +1,80 @@
+body{
+  height: 1500px;
+}
+
+#route {
+  max-width: 900px;
+  min-width: 300px;
+  height: 510px;
+  margin: 100px auto 0px;
+  border: 1px solid black;
+  display: flex;
+  word-break: break-all;
+}
+
+#map {
+  width: 800px;
+  border: 1px solid red;
+} 
+
+#route input {
+  margin: 10px 0px 0px 10px;
+}
+
+.points-routes {
+  border: 1px solid green;
+  /*border-radius: 10px;*/
+  flex-basis: 300px;
+}
+
+.list-points-routes {
+  padding: 0px 15px;
+  width: 220px;
+  user-select: none;
+}
+
+.point {
+  list-style: none;
+  margin-bottom: 5px;
+  padding: 2px 4px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  width: 213px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  user-select: none;
+}
+
+.point:hover {
+  border: 1px solid rgb(0, 0, 0);
+  cursor: grab;
+}
+
+.point:active {
+  cursor: grabbing;
+  opacity: .5;
+}
+
+.ghostPoint {
+  list-style: none;
+  height: 24px;
+  margin-bottom: 5px;
+  width: 213px;
+}
+
+.name-point {
+  display: table-cell;
+  width: 100%;
+}
+
+.delete-point {
+  display: table-cell;
+  padding-left: 10px;
+  font-family: sans-serif;
+  /* font-size: initial; */
+  /* height: 5px; */
+}
+
+.delete-point b {
+  cursor: pointer;
+}

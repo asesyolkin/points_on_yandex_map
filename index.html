@@ -1,0 +1,65 @@
+<DOCTYPE html>
+<html>
+<head>
+<!--   
+  1. не меняется курсор во время нажатия кнопки мыши, только после её отжатия
+  2. не меняется курсок на границе лишки, только внутри неё
+  3. при вохврашении первого пункта обратно на своё место он пермещается в конец списка
+-->
+  <title>Точки на яндекс.карте</title>
+  <!-- <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script> -->
+  <!-- API https://tech.yandex.ru/maps/doc/jsapi/2.1/quick-start/index-docpage/ -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="route">
+    <div class="points-routes">
+      <input class="field-create-new-point" placeholder="Новая точка маршрута">
+      <ul class="list-points-routes" onmousedown="return false">
+        <li class="point">
+            <span class="name-point">
+              точка 1.
+            </span>
+            <span class="delete-point">
+              <b>x</b>
+            </span>  
+          </li>
+          <li class="point">
+            <span class="name-point">
+              точка 2..
+            </span>
+            <span class="delete-point">
+              <b>x</b>
+            </span>  
+          </li>
+          <li class="point">
+            <span class="name-point">
+              точка 3...
+            </span>
+            <span class="delete-point">
+              <b>x</b>
+            </span>  
+          </li>
+          <li class="point">
+            <span class="name-point">
+              точка 4....
+            </span>
+            <span class="delete-point">
+              <b>x</b>
+            </span>  
+          </li>
+          <li class="point">
+            <span class="name-point">
+              точка 5.....
+            </span>
+            <span class="delete-point">
+              <b>x</b>
+            </span>  
+          </li>
+      </ul>
+    </div>
+    <div id="map"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
