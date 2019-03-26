@@ -7,7 +7,7 @@ body{
   min-width: 300px;
   height: 510px;
   margin: 100px auto 0px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   display: flex;
   word-break: break-all;
 }
@@ -15,6 +15,7 @@ body{
 #map {
   width: 800px;
   border: 1px solid red;
+  border-radius: 10px;
 } 
 
 #route input {
@@ -23,8 +24,9 @@ body{
 
 .points-routes {
   border: 1px solid green;
-  /*border-radius: 10px;*/
+  border-radius: 10px;
   flex-basis: 300px;
+  margin-right: 5px;
 }
 
 .list-points-routes {
@@ -42,7 +44,6 @@ body{
   width: 213px;
   background-color: rgb(255, 255, 255);
   border-radius: 5px;
-  user-select: none;
 }
 
 .point:hover {
@@ -52,12 +53,35 @@ body{
 
 .point:active {
   cursor: grabbing;
-  opacity: .5;
+  opacity: .15;
+}
+
+.currentUnderPoint { /* этот класс для того, чтобы убрать действие .point:hover */
+  list-style: none;
+  margin-bottom: 5px;
+  padding: 2px 4px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  width: 213px;
+  background-color: rgb(255, 255, 255);
+}
+
+.pointBefore {
+  background-image: linear-gradient(to top, red, red);
+  background-size: 100% 2px;
+  background-position-y: 0%;
+  background-repeat: no-repeat;
+}
+
+.pointAfter {
+  background-image: linear-gradient(to top, red, red);
+  background-size: 100% 2px;
+  background-position-y: 100%;
+  background-repeat: no-repeat;
 }
 
 .ghostPoint {
   list-style: none;
-  height: 24px;
   margin-bottom: 5px;
   width: 213px;
 }
@@ -71,8 +95,6 @@ body{
   display: table-cell;
   padding-left: 10px;
   font-family: sans-serif;
-  /* font-size: initial; */
-  /* height: 5px; */
 }
 
 .delete-point b {
