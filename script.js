@@ -101,10 +101,10 @@ function changePosition(e) {
 
 function backlightInsertions(e) {
 
-  underPoint = document.elementFromPoint(e.pageX, e.pageY).closest('.point');
+  underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.point');
   
   if (!underPoint) {
-    underPoint = document.elementFromPoint(e.pageX, e.pageY).closest('.currentUnderPoint');
+    underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.currentUnderPoint');
   }
   
   if (!underPoint) return;
@@ -125,7 +125,7 @@ function backlightInsertions(e) {
   let coordsUnderPoint = underPoint.getBoundingClientRect();
   let coordMiddleUnderPoint = (coordsUnderPoint.top + coordsUnderPoint.bottom) / 2;
   
-  if (e.pageY > coordMiddleUnderPoint) {
+  if (e.clientY > coordMiddleUnderPoint) {
     if (underPointContainsClass('pointBefore')) {
       underPointRemoveClass('pointBefore');
     };
