@@ -2,7 +2,6 @@
 
 /*
   1. переделать функцию deletePoint: делать проверку на класс, а не тег, удалять элемент через поиск по классу, а не через навигацию
-  2. точки с высотой более чем в одну строчку далеко вылезают за нижную границу списка (чем больше высота, тем больше вылезают)
 */
 
 const fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
@@ -18,7 +17,9 @@ coordsOfPoint,
 coordsOfUnderPoint,
 coordMiddleUnderPoint,
 halfDistanceBetweenPoints,
-shiftY;
+shiftY,
+firstPointListOfpoints,
+lastPointListOfpoints;
 
 fieldCreateNewPoint.addEventListener('keydown', addNewPoint);
 listOfpoints.addEventListener('click', deletePoint);
@@ -57,6 +58,8 @@ function movePoint(e) {
   coordsOfPoint = getCoords(point);
   coordsOfList = getCoords(listOfpoints);
   shiftY = e.pageY - coordsOfPoint.top;
+  firstPointListOfpoints = listOfpoints.children[0],
+  lastPointListOfpoints = listOfpoints.children[listOfpoints.children.length - 1];
 
   if (listOfpoints.children.length > 1) {
     halfDistanceBetweenPoints = (listOfpoints.children[1].offsetTop - listOfpoints.children[0].offsetTop - listOfpoints.children[0].offsetHeight) / 2;
@@ -108,10 +111,19 @@ function movePoint(e) {
 }
 
 function moveAt(e) {
-  const top = e.pageY - shiftY;
-  
-  if (top > coordsOfList.top - 10 && top < coordsOfList.bottom + 10) {
-    point.style.top = top + 'px';
+  let currentTop = e.pageY - shiftY,
+  currentBottom = e.pageY - shiftY + point.offsetHeight,
+  maxTop = coordsOfList.top - 10,
+  maxBottom = coordsOfList.bottom + 14;
+
+  if (point === firstPointListOfpoints) {
+    maxTop = coordsOfList.top - 10 + point.offsetHeight;
+  } else if (point === lastPointListOfpoints) {
+    maxBottom = coordsOfList.bottom + 10 - point.offsetHeight;
+  }
+
+  if (currentBottom > maxTop && currentTop < maxBottom) {
+    point.style.top = e.pageY - shiftY + 'px';
   };
 }
 
@@ -156,7 +168,7 @@ function changeUnderPointClass() {
 }
 
 function changePosition(e) {
-  if (e.clientY < coordMiddleUnderPoint) {
+  if (e.pageY < coordMiddleUnderPoint) {
     listOfpoints.insertBefore(point, previousPoint);
   } else {
     listOfpoints.insertBefore(point, previousPoint.nextElementSibling);
