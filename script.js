@@ -1,9 +1,5 @@
 'use-strict';
 
-/*
-  1. переделать функцию deletePoint: делать проверку на класс, а не тег, удалять элемент через поиск по классу, а не через навигацию
-*/
-
 const fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
 listOfpoints = document.body.querySelector('.list-points-routes');
 
@@ -36,7 +32,7 @@ function addNewPoint(e) {
   ${fieldCreateNewPoint.value}
   </span>
   <span class="delete-point">
-  <b>x</b>
+  <b class="delete-point-button">x</b>
   </span>  
   `;
   
@@ -45,13 +41,13 @@ function addNewPoint(e) {
 }
 
 function deletePoint(e) {
-  if (e.target.tagName === 'B') {
-    e.target.parentElement.parentElement.remove();
+  if (e.target.classList.contains('delete-point-button')) {
+    e.target.closest('.point').remove();
   }
 }
 
 function movePoint(e) {
-  if (e.target.closest('.delete-point') || !e.target.closest('.point')) return;
+  if (e.target.closest('.delete-point-button') || !e.target.closest('.point')) return;
   
   point = e.target.closest('.point');
   ghostPoint = document.createElement('li');

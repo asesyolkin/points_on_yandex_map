@@ -97,7 +97,7 @@ body{
   font-family: sans-serif;
 }
 
-.delete-point b {
+.delete-point-button {
   cursor: pointer;
 }
 
