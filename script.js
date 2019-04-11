@@ -1,18 +1,23 @@
 'use-strict';
 
 /*
-  1. не меняется курсок на границе лишки, только внутри неё
-  2. переделать функцию deletePoint: делать проверку на класс, а не тег, удалять элемент через поиск по классу, а не через навигацию
+  1. переделать функцию deletePoint: делать проверку на класс, а не тег, удалять элемент через поиск по классу, а не через навигацию
+  2. точки с высотой более чем в одну строчку далеко вылезают за нижную границу списка (чем больше высота, тем больше вылезают)
 */
 
-let fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
-listOfpoints = document.body.querySelector('.list-points-routes'),
-point,
+const fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
+listOfpoints = document.body.querySelector('.list-points-routes');
+
+let point,
 underPoint,
 previousPoint,
 ghostPoint,
-coordsOfPoint,
+dividingLine,
 coordsOfList,
+coordsOfPoint,
+coordsOfUnderPoint,
+coordMiddleUnderPoint,
+halfDistanceBetweenPoints,
 shiftY;
 
 fieldCreateNewPoint.addEventListener('keydown', addNewPoint);
@@ -26,12 +31,12 @@ function addNewPoint(e) {
   newPoint.classList.add('point');
   
   newPoint.innerHTML = `
-    <span class="name-point">
-      ${fieldCreateNewPoint.value}
-    </span>
-    <span class="delete-point">
-      <b>x</b>
-    </span>  
+  <span class="name-point">
+  ${fieldCreateNewPoint.value}
+  </span>
+  <span class="delete-point">
+  <b>x</b>
+  </span>  
   `;
   
   listOfpoints.appendChild(newPoint);
@@ -48,10 +53,14 @@ function movePoint(e) {
   if (e.target.closest('.delete-point') || !e.target.closest('.point')) return;
   
   point = e.target.closest('.point');
-  ghostPoint = document.createElement('li'),
-  coordsOfPoint = getCoords(point),
-  coordsOfList = getCoords(listOfpoints),
+  ghostPoint = document.createElement('li');
+  coordsOfPoint = getCoords(point);
+  coordsOfList = getCoords(listOfpoints);
   shiftY = e.pageY - coordsOfPoint.top;
+
+  if (listOfpoints.children.length > 1) {
+    halfDistanceBetweenPoints = (listOfpoints.children[1].offsetTop - listOfpoints.children[0].offsetTop - listOfpoints.children[0].offsetHeight) / 2;
+  }
   
   point.style.position = 'absolute';
   point.style.borderColor = 'rgb(0, 0, 0)';
@@ -59,23 +68,40 @@ function movePoint(e) {
   point.style.cursor = 'grabbing';
   
   ghostPoint.classList.add('ghostPoint');
-  ghostPoint.style.height = point.offsetHeight;
+  ghostPoint.style.height = point.offsetHeight + 'px';
   listOfpoints.insertBefore(ghostPoint, point.nextElementSibling);
   moveAt(e);
   
   document.onmousemove = function(e) {
     moveAt(e);
-    backlightInsertions(e);
+    
+    if ( !document.elementFromPoint(e.clientX, e.clientY) ) return;
+
+    underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.point');
+    
+    if (!underPoint) {
+      underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.currentUnderPoint');
+    }
+    
+    if (!underPoint) return;
+    
+    changeUnderPointClass();
+    insertDividingLine(e);
   };
   
   document.onmouseup = function(e) {
     document.onmousemove = null;
     
     point.style.cssText = '';
-    changePosition(e);
     listOfpoints.removeChild(ghostPoint);
-    removeBacklightInsertions();
-    previousPoint = '';
+    
+    if (previousPoint) {
+      changePosition(e);
+      removeDividingLine();
+      previousPoint.classList.remove('currentUnderPoint', 'pointBefore', 'pointAfter');
+      previousPoint.classList.add('point');
+      previousPoint = '';
+    };
     
     document.onmouseup = null;
   };
@@ -84,79 +110,57 @@ function movePoint(e) {
 function moveAt(e) {
   const top = e.pageY - shiftY;
   
-  if (top > coordsOfList.top - 10 && top < coordsOfList.bottom - 5) {
+  if (top > coordsOfList.top - 10 && top < coordsOfList.bottom + 10) {
     point.style.top = top + 'px';
   };
 }
 
-function changePosition(e) {
-  if (!previousPoint) return;
+function insertDividingLine(e) {
+  coordsOfUnderPoint = getCoords(underPoint);
+  coordMiddleUnderPoint = (coordsOfUnderPoint.top + coordsOfUnderPoint.bottom) / 2;
 
-  if (previousPoint.classList.contains('pointBefore')) {
+  if (!dividingLine) {
+    dividingLine = document.createElement('div');
+    dividingLine.classList.add('dividingLine');
+    document.body.appendChild(dividingLine);
+    dividingLine.style.width = listOfpoints.clientWidth * 95 / 100 + 'px';
+    dividingLine.style.left = coordsOfList.left + ((listOfpoints.clientWidth - parseInt(dividingLine.style.width)) / 2) + 'px';
+  }
+  
+  if (e.pageY < coordMiddleUnderPoint) {
+    dividingLine.style.top = coordsOfUnderPoint.top - halfDistanceBetweenPoints + 'px';
+  } else {
+    dividingLine.style.top = coordsOfUnderPoint.bottom + halfDistanceBetweenPoints + 'px';
+  }
+}
+
+function removeDividingLine() {
+  dividingLine.remove();
+  dividingLine = null;
+}
+
+function changeUnderPointClass() {
+  if (previousPoint) {
+    if (previousPoint !== underPoint) {
+      previousPoint.classList.remove('currentUnderPoint');
+      previousPoint.classList.add('point');
+      previousPoint = underPoint;
+      underPoint.classList.remove('point');
+      underPoint.classList.add('currentUnderPoint');
+    };
+  } else {
+    previousPoint = underPoint;
+    underPoint.classList.remove('point');
+    underPoint.classList.add('currentUnderPoint');
+  };
+}
+
+function changePosition(e) {
+  if (e.clientY < coordMiddleUnderPoint) {
     listOfpoints.insertBefore(point, previousPoint);
   } else {
     listOfpoints.insertBefore(point, previousPoint.nextElementSibling);
   }
-}
-
-function backlightInsertions(e) {
-
-  underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.point');
-  
-  if (!underPoint) {
-    underPoint = document.elementFromPoint(e.clientX, e.clientY).closest('.currentUnderPoint');
-  }
-  
-  if (!underPoint) return;
-  
-  if (previousPoint) {
-    if (previousPoint !== underPoint) {
-      removeBacklightInsertions();
-      previousPoint = underPoint;
-      underPointRemoveClass('point');
-      underPointAddClass('currentUnderPoint');
-    };
-  } else {
-    previousPoint = underPoint;
-    underPointRemoveClass('point');
-    underPointAddClass('currentUnderPoint');
-  };
-  
-  let coordsUnderPoint = underPoint.getBoundingClientRect();
-  let coordMiddleUnderPoint = (coordsUnderPoint.top + coordsUnderPoint.bottom) / 2;
-  
-  if (e.clientY > coordMiddleUnderPoint) {
-    if (underPointContainsClass('pointBefore')) {
-      underPointRemoveClass('pointBefore');
-    };
-    if (underPointContainsClass('pointAfter')) return;
-    else underPointAddClass('pointAfter');
-  } else {
-    if (underPointContainsClass('pointAfter')) {
-      underPointRemoveClass('pointAfter');
-    };
-    if (underPointContainsClass('pointBefore')) return;
-    else underPointAddClass('pointBefore');
-  }
-  
-  function underPointAddClass(nameClass) {
-    underPoint.classList.add(nameClass);
-  }
-  
-  function underPointRemoveClass(nameClass) {
-    underPoint.classList.remove(nameClass);
-  }
-  
-  function underPointContainsClass(nameClass) {
-    return underPoint.classList.contains(nameClass);
-  }
-}
-
-function removeBacklightInsertions() {
-  if (!previousPoint) return;
-
-  previousPoint.classList.remove('currentUnderPoint', 'pointBefore', 'pointAfter');
-  previousPoint.classList.add('point');
 }
 
 function getCoords(elem) {
@@ -168,10 +172,6 @@ function getCoords(elem) {
     right: box.right + pageXOffset
   };
 }
-
-// console.log(getCoords(document.querySelector('.point')));
-// console.log(getCoords(document.querySelector('.list-points-routes')));
-
 
 // Функция ymaps.ready() будет вызвана, когда
 // загрузятся все компоненты API, а также когда будет готово DOM-дерево.

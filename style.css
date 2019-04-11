@@ -100,3 +100,10 @@ body{
 .delete-point b {
   cursor: pointer;
 }
+
+.dividingLine {
+  height: 2px;
+  /* width: 246px; */
+  background-color: red;
+  position: absolute;
+}
