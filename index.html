@@ -1,60 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Точки на яндекс.карте</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
   <!-- <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script> -->
   <!-- API https://tech.yandex.ru/maps/doc/jsapi/2.1/quick-start/index-docpage/ -->
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="route">
-    <div class="points-routes">
-      <input class="field-create-new-point" placeholder="Новая точка маршрута">
-      <ul class="list-points-routes" onmousedown="return false">
-        <li class="point">
-            <span class="name-point">
-              точка 1.
-            </span>
-            <span class="delete-point">
-              <b class="delete-point-button">x</b>
-            </span>  
-          </li>
-          <li class="point">
-            <span class="name-point">
-              точка 2..
-            </span>
-            <span class="delete-point">
-              <b class="delete-point-button">x</b>
-            </span>  
-          </li>
-          <li class="point">
-            <span class="name-point">
-              точка 3...
-            </span>
-            <span class="delete-point">
-              <b class="delete-point-button">x</b>
-            </span>  
-          </li>
-          <li class="point">
-            <span class="name-point">
-              точка 4....
-            </span>
-            <span class="delete-point">
-              <b class="delete-point-button">x</b>
-            </span>  
-          </li>
-          <li class="point">
-            <span class="name-point">
-              точка 5.....
-            </span>
-            <span class="delete-point">
-              <b class="delete-point-button">x</b>
-            </span>  
-          </li>
-      </ul>
-    </div>
-    <div id="map"></div>
-  </div>
+  <div id="container"></div>
   <script src="script.js"></script>
 </body>
 </html>
