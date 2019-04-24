@@ -23,7 +23,7 @@ var Route = function (_React$Component) {
       return React.createElement(
         "div",
         { id: "route" },
-        React.createElement(PointsRoutes, null),
+        React.createElement(PointsRoute, null),
         React.createElement(YanMap, null)
       );
     }
@@ -32,104 +32,177 @@ var Route = function (_React$Component) {
   return Route;
 }(React.Component);
 
-var PointsRoutes = function (_React$Component2) {
-  _inherits(PointsRoutes, _React$Component2);
+var PointsRoute = function (_React$Component2) {
+  _inherits(PointsRoute, _React$Component2);
 
-  function PointsRoutes() {
-    _classCallCheck(this, PointsRoutes);
+  function PointsRoute(props) {
+    _classCallCheck(this, PointsRoute);
 
-    return _possibleConstructorReturn(this, (PointsRoutes.__proto__ || Object.getPrototypeOf(PointsRoutes)).apply(this, arguments));
+    var _this2 = _possibleConstructorReturn(this, (PointsRoute.__proto__ || Object.getPrototypeOf(PointsRoute)).call(this, props));
+
+    _this2.addNewPoint = function (namePoint) {
+      var newPoint = React.createElement(Point, { key: Math.random(), pointName: namePoint });
+      var newArrOfPoints = _this2.state.points.slice();
+      newArrOfPoints.push(newPoint);
+      _this2.setState({
+        points: newArrOfPoints
+      });
+    };
+
+    _this2.state = {
+      points: []
+    };
+
+    var numberOfPoints = 5;
+
+    for (var i = 0; i < numberOfPoints; ++i) {
+      var _point = React.createElement(Point, { key: Math.random(), pointNumber: i });
+      _this2.state.points.push(_point);
+    };
+    return _this2;
   }
 
-  _createClass(PointsRoutes, [{
+  _createClass(PointsRoute, [{
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
-        { className: "points-routes" },
-        React.createElement(CreateNewPoint, null),
-        React.createElement(ListPointsRoutes, null)
+        { className: "points-route" },
+        React.createElement(CreateNewPoint, { addNewPoint: this.addNewPoint }),
+        React.createElement(ListPointsRoute, { points: this.state.points })
       );
     }
   }]);
 
-  return PointsRoutes;
+  return PointsRoute;
 }(React.Component);
 
 var CreateNewPoint = function (_React$Component3) {
   _inherits(CreateNewPoint, _React$Component3);
 
   function CreateNewPoint() {
+    var _ref;
+
+    var _temp, _this3, _ret;
+
     _classCallCheck(this, CreateNewPoint);
 
-    return _possibleConstructorReturn(this, (CreateNewPoint.__proto__ || Object.getPrototypeOf(CreateNewPoint)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this3 = _possibleConstructorReturn(this, (_ref = CreateNewPoint.__proto__ || Object.getPrototypeOf(CreateNewPoint)).call.apply(_ref, [this].concat(args))), _this3), _this3.onKeyDownHandler = function (e) {
+      if (e.keyCode !== 13 || e.target.value === '') return;
+
+      _this3.props.addNewPoint(e.target.value);
+      e.target.value = '';
+    }, _temp), _possibleConstructorReturn(_this3, _ret);
   }
 
   _createClass(CreateNewPoint, [{
     key: "render",
     value: function render() {
-      return React.createElement("input", { className: "field-create-new-point", placeholder: "\u041D\u043E\u0432\u0430\u044F \u0442\u043E\u0447\u043A\u0430 \u043C\u0430\u0440\u0448\u0440\u0443\u0442\u0430" });
+      return React.createElement("input", { className: "field-create-new-point", placeholder: "\u041D\u043E\u0432\u0430\u044F \u0442\u043E\u0447\u043A\u0430 \u043C\u0430\u0440\u0448\u0440\u0443\u0442\u0430", onKeyDown: this.onKeyDownHandler });
     }
   }]);
 
   return CreateNewPoint;
 }(React.Component);
 
-var ListPointsRoutes = function (_React$Component4) {
-  _inherits(ListPointsRoutes, _React$Component4);
+var ListPointsRoute = function (_React$Component4) {
+  _inherits(ListPointsRoute, _React$Component4);
 
-  function ListPointsRoutes() {
-    _classCallCheck(this, ListPointsRoutes);
+  function ListPointsRoute() {
+    _classCallCheck(this, ListPointsRoute);
 
-    return _possibleConstructorReturn(this, (ListPointsRoutes.__proto__ || Object.getPrototypeOf(ListPointsRoutes)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ListPointsRoute.__proto__ || Object.getPrototypeOf(ListPointsRoute)).apply(this, arguments));
   }
 
-  _createClass(ListPointsRoutes, [{
+  _createClass(ListPointsRoute, [{
     key: "render",
     value: function render() {
-      var numberOfPoints = 5;
-      var arrPoints = [];
-
-      for (var i = 0; i < numberOfPoints; ++i) {
-        var _point = React.createElement(
-          "li",
-          { className: "point", key: i },
-          React.createElement(
-            "span",
-            { className: "name-point" },
-            "\u0442\u043E\u0447\u043A\u0430 ",
-            i + 1,
-            "."
-          ),
-          React.createElement(
-            "span",
-            { className: "delete-point" },
-            React.createElement(
-              "b",
-              { className: "delete-point-button" },
-              "x"
-            )
-          )
-        );
-
-        arrPoints.push(_point);
-      }
-
       return React.createElement(
         "ul",
-        { className: "list-points-routes", onMouseDown: function onMouseDown() {
-            return false;
+        { className: "list-points-route", onMouseDown: function onMouseDown(e) {
+            return e.preventDefault();
           } },
-        arrPoints
+        this.props.points
       );
     }
   }]);
 
-  return ListPointsRoutes;
+  return ListPointsRoute;
 }(React.Component);
 
-var YanMap = function (_React$Component5) {
-  _inherits(YanMap, _React$Component5);
+var Point = function (_React$Component5) {
+  _inherits(Point, _React$Component5);
+
+  function Point() {
+    _classCallCheck(this, Point);
+
+    return _possibleConstructorReturn(this, (Point.__proto__ || Object.getPrototypeOf(Point)).apply(this, arguments));
+  }
+
+  _createClass(Point, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "li",
+        { className: "point" },
+        React.createElement(
+          "span",
+          { className: "name-point" },
+          this.props.pointName ? this.props.pointName : "\u0442\u043E\u0447\u043A\u0430 " + (this.props.pointNumber + 1)
+        ),
+        React.createElement(DeletePoint, null)
+      );
+    }
+  }]);
+
+  return Point;
+}(React.Component);
+
+var DeletePoint = function (_React$Component6) {
+  _inherits(DeletePoint, _React$Component6);
+
+  function DeletePoint() {
+    var _ref2;
+
+    var _temp2, _this6, _ret2;
+
+    _classCallCheck(this, DeletePoint);
+
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return _ret2 = (_temp2 = (_this6 = _possibleConstructorReturn(this, (_ref2 = DeletePoint.__proto__ || Object.getPrototypeOf(DeletePoint)).call.apply(_ref2, [this].concat(args))), _this6), _this6.deletePoint = function (e) {
+      if (e.target.classList.contains('delete-point-button')) {
+        e.target.closest('.point').remove();
+      }
+    }, _temp2), _possibleConstructorReturn(_this6, _ret2);
+  }
+
+  _createClass(DeletePoint, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "span",
+        { className: "delete-point" },
+        React.createElement(
+          "b",
+          { className: "delete-point-button", onClick: this.deletePoint },
+          "x"
+        )
+      );
+    }
+  }]);
+
+  return DeletePoint;
+}(React.Component);
+
+var YanMap = function (_React$Component7) {
+  _inherits(YanMap, _React$Component7);
 
   function YanMap() {
     _classCallCheck(this, YanMap);
@@ -150,7 +223,7 @@ var YanMap = function (_React$Component5) {
 ReactDOM.render(React.createElement(Route, null), document.getElementById('container'));
 
 var fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
-    listOfpoints = document.body.querySelector('.list-points-routes');
+    listOfpoints = document.body.querySelector('.list-points-route');
 
 var point = void 0,
     underPoint = void 0,
@@ -166,27 +239,7 @@ var point = void 0,
     firstPointListOfpoints = void 0,
     lastPointListOfpoints = void 0;
 
-fieldCreateNewPoint.addEventListener('keydown', addNewPoint);
-listOfpoints.addEventListener('click', deletePoint);
 listOfpoints.addEventListener('mousedown', movePoint);
-
-function addNewPoint(e) {
-  if (e.keyCode !== 13 || this.value === '') return;
-
-  var newPoint = document.createElement('li');
-  newPoint.classList.add('point');
-
-  newPoint.innerHTML = "\n  <span class=\"name-point\">\n  " + fieldCreateNewPoint.value + "\n  </span>\n  <span class=\"delete-point\">\n  <b class=\"delete-point-button\">x</b>\n  </span>  \n  ";
-
-  listOfpoints.appendChild(newPoint);
-  this.value = '';
-}
-
-function deletePoint(e) {
-  if (e.target.classList.contains('delete-point-button')) {
-    e.target.closest('.point').remove();
-  }
-}
 
 function movePoint(e) {
   if (e.target.closest('.delete-point-button') || !e.target.closest('.point')) return;

@@ -4,55 +4,99 @@ class Route extends React.Component {
   render() {
     return (
       <div id="route">
-        <PointsRoutes />
+        <PointsRoute />
         <YanMap />
       </div>
-    )
+    );
   }
 }
 
-class PointsRoutes extends React.Component {
-  render() {  
+class PointsRoute extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      points: []
+    };
+
+    const numberOfPoints = 5;
+    
+    for (let i = 0; i < numberOfPoints; ++i) {
+      let point = <Point key={Math.random()} pointNumber={i}/>
+      this.state.points.push(point);
+    };
+  }
+
+  addNewPoint = (namePoint) => {
+    const newPoint = <Point key={Math.random()} pointName={namePoint}/>;
+    const newArrOfPoints = this.state.points.slice();
+    newArrOfPoints.push(newPoint);
+    this.setState({
+      points: newArrOfPoints
+    });
+  }
+
+  render() {
     return (
-      <div className="points-routes">
-        <CreateNewPoint />
-        <ListPointsRoutes />
+      <div className="points-route">
+        <CreateNewPoint addNewPoint={this.addNewPoint} />
+        <ListPointsRoute points={this.state.points} />
       </div>
-    )
+    );
   }
 }
 
 class CreateNewPoint extends React.Component {
+  onKeyDownHandler = (e) => {
+    if (e.keyCode !== 13 || e.target.value === '') return;
+
+    this.props.addNewPoint(e.target.value);
+    e.target.value = '';
+  }
+
   render() {
     return (
-      <input className="field-create-new-point" placeholder="Новая точка маршрута" />
+      <input className="field-create-new-point" placeholder="Новая точка маршрута" onKeyDown={this.onKeyDownHandler} />
       )
-    }
+    };
   }
   
-class ListPointsRoutes extends React.Component {
+class ListPointsRoute extends React.Component {
   render() {
-    const numberOfPoints = 5;
-    const arrPoints = [];
-    
-    for (let i = 0; i < numberOfPoints; ++i) {
-      let point = <li className="point" key={i}>
-        <span className="name-point">
-          точка {i+1}.
-        </span>
-        <span className="delete-point">
-          <b className="delete-point-button">x</b>
-        </span>  
-      </li>;
-    
-      arrPoints.push(point);
-    }
-
     return (
-      <ul className="list-points-routes" onMouseDown={() => false}>
-        {arrPoints}
+      <ul className="list-points-route" onMouseDown={(e) => e.preventDefault()}>
+        {this.props.points}
       </ul>
+    );
+  }
+}
+
+class Point extends React.Component {
+  render() {
+    return (
+      <li className="point">
+        <span className="name-point">
+          {this.props.pointName ? this.props.pointName : `точка ${this.props.pointNumber + 1}`}
+        </span>
+        <DeletePoint />
+      </li>
     )
+  }
+}
+
+class DeletePoint extends React.Component {
+  deletePoint = (e) => {
+    if (e.target.classList.contains('delete-point-button')) {
+      e.target.closest('.point').remove();
+    }
+  }
+ 
+  render() {
+    return (
+      <span className="delete-point">
+        <b className="delete-point-button" onClick={this.deletePoint}>x</b>
+      </span>
+    );
   }
 }
 
@@ -60,7 +104,7 @@ class YanMap extends React.Component {
   render() {
     return (
       <div id="map"></div>
-    )
+    );
   }
 }
   
@@ -70,7 +114,7 @@ ReactDOM.render(
 );
 
 const fieldCreateNewPoint = document.body.querySelector('.field-create-new-point'),
-listOfpoints = document.body.querySelector('.list-points-routes');
+listOfpoints = document.body.querySelector('.list-points-route');
 
 let point,
 underPoint,
@@ -86,34 +130,7 @@ shiftY,
 firstPointListOfpoints,
 lastPointListOfpoints;
 
-fieldCreateNewPoint.addEventListener('keydown', addNewPoint);
-listOfpoints.addEventListener('click', deletePoint);
 listOfpoints.addEventListener('mousedown', movePoint);
-
-function addNewPoint(e) {
-  if (e.keyCode !== 13 || this.value === '') return;
-  
-  let newPoint = document.createElement('li');
-  newPoint.classList.add('point');
-  
-  newPoint.innerHTML = `
-  <span class="name-point">
-  ${fieldCreateNewPoint.value}
-  </span>
-  <span class="delete-point">
-  <b class="delete-point-button">x</b>
-  </span>  
-  `;
-  
-  listOfpoints.appendChild(newPoint);
-  this.value = '';
-}
-
-function deletePoint(e) {
-  if (e.target.classList.contains('delete-point-button')) {
-    e.target.closest('.point').remove();
-  }
-}
 
 function movePoint(e) {
   if (e.target.closest('.delete-point-button') || !e.target.closest('.point')) return;

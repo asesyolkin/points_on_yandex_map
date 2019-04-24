@@ -22,14 +22,14 @@ body{
   margin: 10px 0px 0px 10px;
 }
 
-.points-routes {
+.points-route {
   border: 1px solid green;
   border-radius: 10px;
   flex-basis: 300px;
   margin-right: 5px;
 }
 
-.list-points-routes {
+.list-points-route {
   padding: 0px 15px;
   width: 220px;
   user-select: none;
