@@ -97,6 +97,13 @@ body{
   font-family: sans-serif;
 }
 
-.delete-point b {
+.delete-point-button {
   cursor: pointer;
+}
+
+.dividingLine {
+  height: 2px;
+  /* width: 246px; */
+  background-color: red;
+  position: absolute;
 }
